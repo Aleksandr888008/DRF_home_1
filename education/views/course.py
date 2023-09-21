@@ -8,4 +8,17 @@ from education.seriallizers.course import CourseSerializer
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    permission_classes = [IsModerator | IsOwner]
+    #permission_classes = [IsModerator | IsOwner]
+
+    def get_permissions(self):
+        """Определение прав доступа"""
+        if self.action == 'create':
+            permission_classes = [IsOwner]
+        elif self.action == 'list':
+            permission_classes = [IsModerator | IsOwner]
+        elif self.action in ('retrieve', 'update'):
+            permission_classes = [IsModerator | IsOwner]
+        else:  # destroy
+            permission_classes = [IsOwner]
+
+        return [permission() for permission in permission_classes]
