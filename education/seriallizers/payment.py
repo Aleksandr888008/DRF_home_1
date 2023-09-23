@@ -6,6 +6,8 @@ from education.seriallizers.lesson import LessonSerializer
 
 
 class PaymentSerializer(serializers.ModelSerializer):
+    """ Сериализатор представление модели Payment """
+
     paid_course = CourseSerializer(many=True, read_only=True)
     paid_lesson = LessonSerializer(many=True, read_only=True)
 

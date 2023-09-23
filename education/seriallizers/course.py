@@ -4,6 +4,7 @@ from education.seriallizers.lesson import LessonSerializer
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    """ Сериализатор представление модели Course """
 
     lessons = LessonSerializer(many=True, read_only=True, source='lesson_set')
 

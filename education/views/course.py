@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 
 from education.models import Course
+from education.paginators import CoursePagintor
 from education.permissions import IsModerator, IsOwner
 from education.seriallizers.course import CourseSerializer
 
@@ -8,7 +9,7 @@ from education.seriallizers.course import CourseSerializer
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    #permission_classes = [IsModerator | IsOwner]
+    pagination_class = CoursePagintor
 
     def get_permissions(self):
         """Определение прав доступа"""
