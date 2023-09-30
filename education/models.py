@@ -51,6 +51,11 @@ class Payment(models.Model):
     payment_amount = models.IntegerField(verbose_name='сумма оплаты')
     payment_method = models.CharField(verbose_name='способ оплаты', **NULLABLE)  # наличные или перевод на счет.
 
+    is_paid = models.BooleanField(default=False, verbose_name='Оплачено')
+    id_intent = models.CharField(max_length=300, verbose_name='id_намерение платежа', **NULLABLE)
+    id_method = models.CharField(max_length=300, verbose_name='id_метод платежа', **NULLABLE)
+    status = models.CharField(max_length=50, verbose_name='статус платежа', **NULLABLE)
+
     def __str__(self):
         """Выводит информацию по оплате"""
         if self.paid_course:
