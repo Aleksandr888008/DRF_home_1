@@ -9,15 +9,29 @@ from users.models import User
 
 
 @shared_task
-def send_message(subscription: Subscription, user: User):
-    """Отправка письма пользователям об обновлении материалов курса по подписки"""
+def send_message(pk, model):
 
-    send_mail(
-        subject="Обновление курса!",
-        message=f"У курса {subscription.course} появилось обновление - {subscription.version}!",
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[user.email]
-    )
+    if model == 'Subscription':
+        instance = Subscription.objects.filter(pk=pk).first()
+
+        if instance:
+            send_mail(
+                subject='Обновление курса!',
+                message=f"У курса {instance.course} появилось обновление - {instance.version}!",
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[instance.user.email]
+            )
+
+# @shared_task
+# def send_message(subscription: Subscription, user: User):
+#     """Отправка письма пользователям об обновлении материалов курса по подписки"""
+#
+#     send_mail(
+#         subject="Обновление курса!",
+#         message=f"У курса {subscription.course} появилось обновление - {subscription.version}!",
+#         from_email=settings.EMAIL_HOST_USER,
+#         recipient_list=[user.email]
+#     )
 
 
 @shared_task

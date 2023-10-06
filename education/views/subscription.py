@@ -31,8 +31,13 @@ class SubscriptionUpdateAPIView(generics.UpdateAPIView):
     queryset = Subscription.objects.all()
 
     def perform_update(self, serializer):
-        super().perform_update(serializer)
-        send_message.delay()
+        instance = self.get_object()
+        send_message.delay(instance.id, 'Subscription')
+        serializer.save()
+
+    # def perform_update(self, serializer):
+    #     super().perform_update(serializer)
+    #     send_message.delay()
 
 
 class SubscriptionRetrieveAPIView(generics.RetrieveAPIView):
