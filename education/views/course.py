@@ -4,12 +4,17 @@ from education.models import Course
 from education.paginators import CoursePagintor
 from education.permissions import IsModerator, IsOwner
 from education.seriallizers.course import CourseSerializer
+from education.tasks import send_message
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     pagination_class = CoursePagintor
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        send_message.delay(course.pk)
 
     def get_permissions(self):
         """Определение прав доступа"""

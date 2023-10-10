@@ -4,34 +4,27 @@ from celery import shared_task
 from django.conf import settings
 from django.core.mail import send_mail
 
-from education.models import Subscription
+from education.models import Subscription, Course
 from users.models import User
 
 
 @shared_task
-def send_message(pk, model):
+def send_message(pk):
 
-    if model == 'Subscription':
-        instance = Subscription.objects.filter(pk=pk).first()
+    instance = Subscription.objects.filter(course=pk)
+    course = Course.objects.get(pk=pk)
 
-        if instance:
-            send_mail(
-                subject='Обновление курса!',
-                message=f"У курса {instance.course} появилось обновление - {instance.version}!",
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[instance.user.email]
-            )
+    if instance:
+        mail = []
+        for obj in instance:
+            mail.append(obj.user.email)
 
-# @shared_task
-# def send_message(subscription: Subscription, user: User):
-#     """Отправка письма пользователям об обновлении материалов курса по подписки"""
-#
-#     send_mail(
-#         subject="Обновление курса!",
-#         message=f"У курса {subscription.course} появилось обновление - {subscription.version}!",
-#         from_email=settings.EMAIL_HOST_USER,
-#         recipient_list=[user.email]
-#     )
+        send_mail(
+            subject='Обновление курса!',
+            message=f"У курса {course.name} появилось обновление!",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=mail
+        )
 
 
 @shared_task
